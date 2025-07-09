@@ -2,6 +2,8 @@ package com.springboot.blog.controller;
 
 import com.springboot.blog.payload.CommentDTO;
 import com.springboot.blog.service.CommentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +12,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/")
+@Tag(
+        name = "CRUD REST APIs for Comment Resource"
+)
 public class CommentController {
     private CommentService commentService;
 
@@ -36,15 +41,15 @@ public class CommentController {
     }
 
     @PutMapping("/posts/{postId}/comments/{id}")
-    public ResponseEntity<CommentDTO> updateComment(@RequestBody CommentDTO commentDTO,
+    public ResponseEntity<CommentDTO> updateComment(@Valid @RequestBody CommentDTO commentDTO,
                                                     @PathVariable (value = "postId") Long postId,
-                                                    @PathVariable (value = "commentId") Long commentId) {
+                                                    @PathVariable (value = "id") Long commentId) {
         CommentDTO updateComment = commentService.updateComment(commentId, postId, commentDTO);
         return new ResponseEntity<>(updateComment, HttpStatus.OK);
     }
 
     @DeleteMapping("/posts/{postId}/comments/{id}")
-    public ResponseEntity<String> deleteComment(@PathVariable (value = "commentId") Long commentId,
+    public ResponseEntity<String> deleteComment(@PathVariable (value = "id") Long commentId,
                                                     @PathVariable (value = "postId") Long postId) {
         commentService.deleteComment(commentId, postId);
         return new ResponseEntity<>("Comment Deleted successfully", HttpStatus.OK);
